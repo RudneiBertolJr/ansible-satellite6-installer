@@ -34,7 +34,7 @@ This role was created to install and configure a Satellite 6 server
 
 - 2) Store the manifest under the directory "files" in this role. ~/ansible-satellite6-install/files
 
-- 3) Create a playbook as the following instance:
+- 3) Create a playbook as the following instance or use the project example:
 
 ~~~
 cat playbook_install_sat.yml
@@ -110,7 +110,7 @@ https://access.redhat.com/articles/1365633
 
 ~~~
 ---
-## Playbook to deploy Satellite 6.4 latest
+## Playbook to deploy Satellite 6.4 latest and reboot the server
 - name: MAIN | Deploying satellite server
   hosts: all
   vars:
@@ -120,4 +120,5 @@ https://access.redhat.com/articles/1365633
     manifest_name: "my_super_manifest.zip"
   roles:
     - ansible-satellite6-install
+    - reboot
 ~~~
