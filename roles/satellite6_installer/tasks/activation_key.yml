@@ -1,0 +1,32 @@
+---
+- name: activation_key | Creating ak ak_rhel7_base_library
+  command: "{{ item }}"
+  tags:
+    - activation_key
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" activation-key create --content-view "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --unlimited-hosts --lifecycle-environment Library --name ak_rhel7_base_library
+
+- name: activation_key | Creating ak ak_rhel7_base_dev
+  command: "{{ item }}"
+  tags:
+    - activation_key
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" activation-key create --content-view "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --unlimited-hosts --lifecycle-environment Dev --name ak_rhel7_base_dev
+
+- name: activation_key | Creating ak ak_rhel7_base_qa
+  command: "{{ item }}"
+  tags:
+    - activation_key
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" activation-key create --content-view "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --unlimited-hosts --lifecycle-environment QA --name ak_rhel7_base_qa
+
+- name: activation_key | Creating ak ak_rhel7_base_prod
+  command: "{{ item }}"
+  tags:
+    - activation_key
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" activation-key create --content-view "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --unlimited-hosts --lifecycle-environment Prod --name ak_rhel7_base_prod

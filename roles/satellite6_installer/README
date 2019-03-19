@@ -1,0 +1,21 @@
+# To use this role you need to create a manifest on the RHSM Customer Portal
+# Download the manifest and copy to the ~/roles/satellite6_installer/files directory.
+# NOTE: There is a variable that must be replaced to the Manifest name.
+# NOTE: The rhsm_username and rhsm_password are a variables that must be replaced to the user and password that use to access the Red Hat Customer Portal
+##################################
+# Variables:
+#
+#	rhsm_user: "MYRHSMUSER"
+#	rhsm_password: "CHANGEME"
+#	satellite_version: "6.4"
+#	satellite_scenario: satellite
+#	hostname_full: '{{ ansible_fqdn }}'
+#	hostname_short: '{{ ansible_hostname }}'
+#	ip_address_sat: "{{ ansible_default_ipv4['address'] }}"
+#	foreman_admin_password: 'CHANGEME'
+#	foreman_initial_organization: 'ACME'
+#	foreman_initial_location: 'Roadrunner'
+#	manifest_path: /root
+#	manifest_name: "manifest_satellite_{{ satellite_version }}.zip"
+#	cv_name: "cv_rhel7_base"
+##################################

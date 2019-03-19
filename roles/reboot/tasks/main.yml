@@ -1,0 +1,13 @@
+---
+- name: reiniciar servidor
+  shell: /usr/bin/sleep 1 && /sbin/shutdown -r now "Reboot triggered by Ansible script"
+  async: 1
+  poll: 0
+
+- name: waiting for reboot on server {{ inventory_hostname }}
+  local_action:
+    module: wait_for
+        port=22
+        host={{ inventory_hostname }}
+        timeout=300
+  become: false

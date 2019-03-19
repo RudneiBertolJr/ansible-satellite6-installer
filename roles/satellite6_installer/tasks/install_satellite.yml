@@ -1,0 +1,5 @@
+---
+- name: install_satellite | Install Satellite with desired scenario
+  command: /usr/sbin/satellite-installer --scenario "{{ satellite_scenario }}" --foreman-admin-password "{{ foreman_admin_password }}" --foreman-initial-location "{{ foreman_initial_location }}" --foreman-initial-organization "{{ foreman_initial_organization }}"
+  tags:
+    - install_satellite

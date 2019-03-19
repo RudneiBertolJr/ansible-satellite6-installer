@@ -1,0 +1,67 @@
+---
+- name: content_view | Creating Content View "{{ cv_name }}"
+  command: "{{ item }}"
+  tags:
+    - content_view
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view create --name "{{ cv_name }}" --label "{{ cv_name }}" --organization "{{ foreman_initial_organization }}"
+
+- name: content_view | Setting Products to "{{ cv_name }}" Content View 
+  command: "{{ item }}"
+  tags:
+    - content_view
+  when: satellite_version == "6.2"
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view update --name "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --repositories "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server","Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server","Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64"
+
+- name: content_view | Setting Products to "{{ cv_name }}" Content View 
+  command: "{{ item }}"
+  tags:
+    - content_view
+  when: satellite_version == "6.3"
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view update --name "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --repositories "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server","Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server","Red Hat Satellite Tools 6.3 for RHEL 7 Server RPMs x86_64","Red Hat Satellite Tools 6.3 - Puppet 4 for RHEL 7 Server RPMs x86_64"
+
+- name: content_view | Setting Products to "{{ cv_name }}" Content View 
+  command: "{{ item }}"
+  tags:
+    - content_view
+  when: satellite_version == "6.4"
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view update --name "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --repositories "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server","Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server","Red Hat Satellite Tools 6.4 for RHEL 7 Server RPMs x86_64"
+
+- name: content_view | Publishing Content View "{{ cv_name }}"
+  command: "{{ item }}"
+  tags:
+    - content_view
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view publish --name "{{ cv_name }}" --organization "{{ foreman_initial_organization }}"
+
+- name: content_view | Promoting Content View "{{ cv_name }}" to Dev
+  command: "{{ item }}"
+  tags:
+    - content_view
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view version promote --from-lifecycle-environment Library --to-lifecycle-environment Dev --content-view "{{ cv_name }}" --organization "{{ foreman_initial_organization }}"
+
+- name: content_view | Promoting Content View "{{ cv_name }}" to QA
+  command: "{{ item }}"
+  tags:
+    - content_view
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view version promote --from-lifecycle-environment Dev --to-lifecycle-environment QA --content-view "{{ cv_name }}" --organization "{{ foreman_initial_organization }}"
+
+- name: content_view | Promoting Content View "{{ cv_name }}" to Prod
+  command: "{{ item }}"
+  tags:
+    - content_view
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view version promote --from-lifecycle-environment QA --to-lifecycle-environment Prod --content-view "{{ cv_name }}" --organization "{{ foreman_initial_organization }}"

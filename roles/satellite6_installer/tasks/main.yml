@@ -1,0 +1,11 @@
+---
+- include: registration.yml
+- include: repositories.yml
+- include: firewall.yml
+- include: install_software.yml
+- include: install_satellite.yml
+- include: configure_satellite.yml
+- include: sync_repos.yml
+- include: lifecycle_environment.yml
+- include: content_view.yml
+- include: activation_key.yml

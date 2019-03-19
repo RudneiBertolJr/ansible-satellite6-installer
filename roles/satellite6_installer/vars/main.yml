@@ -1,0 +1,33 @@
+---
+rhsm_user: "MYRHSMUSER"
+rhsm_password: "CHANGEME"
+satellite_version: "6.4"
+satellite_scenario: satellite
+hostname_full: '{{ ansible_fqdn }}'
+hostname_short: '{{ ansible_hostname }}'
+ip_address_sat: "{{ ansible_default_ipv4['address'] }}"
+foreman_admin_password: 'CHANGEME'
+foreman_initial_organization: 'ACME'
+foreman_initial_location: 'Roadrunner'
+manifest_path: /root
+manifest_name: "manifest_satellite_{{ satellite_version }}.zip"
+cv_name: "cv_rhel7_base"
+satellite_package_version: "satellite"
+
+firewall_services:
+  - ssh
+  - RH-Satellite-6
+
+firewall_ports:
+  - 7911/tcp
+  - 8000/tcp
+  - 8443/tcp
+
+packages_list:
+  - "{{ satellite_package_version }}*"
+  - wget
+  - git
+  - bash-completion
+  - screen
+  - vim-*
+  - chrony

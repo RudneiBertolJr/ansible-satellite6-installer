@@ -1,0 +1,10 @@
+---
+- name: lifecycle_environment | Creating Lifecycle Environment Dev|QA|Prod
+  command: "{{ item }}"
+  tags:
+    - lifecycle_environment
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" lifecycle-environment create --name Dev --label Dev --prior Library --organization "{{ foreman_initial_organization }}"
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" lifecycle-environment create --name QA --label QA --prior Dev --organization "{{ foreman_initial_organization }}"
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" lifecycle-environment create --name Prod --label Prod --prior QA --organization "{{ foreman_initial_organization }}"

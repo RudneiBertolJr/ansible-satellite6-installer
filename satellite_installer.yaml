@@ -1,0 +1,8 @@
+---
+- name: MAIN | Deploying satellite server
+  hosts: all
+  vars:
+    rhsm_password: 'CHANGEME'
+  roles:
+    - ansible-satellite6-install
+    - reboot
