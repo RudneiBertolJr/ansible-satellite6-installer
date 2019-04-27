@@ -4,5 +4,5 @@
   vars:
     rhsm_password: 'CHANGEME'
   roles:
-    - ansible-satellite6-install
+    - satellite6_installer
     - reboot

@@ -24,7 +24,7 @@ firewall_ports:
   - 8443/tcp
 
 packages_list:
-  - "{{ satellite_package_version }}*"
+  - "{{ satellite_package_version }}"
   - wget
   - git
   - bash-completion
