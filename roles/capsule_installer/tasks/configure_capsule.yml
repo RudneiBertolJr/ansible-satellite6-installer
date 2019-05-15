@@ -1,0 +1,34 @@
+---
+- name: configure_capsule | Set hostname
+  command: hostnamectl set-hostname {{ hostname_full }}
+  tags:
+    - configure_capsule
+
+- name: configure_capsule | Add hostname to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ ip_address_cap }} {{ ansible_fqdn }} {{ ansible_hostname }}"
+  tags:
+    - configure_capsule
+
+- name: configure_capsule | Execute the Capsule Certs Generate
+  command: /usr/sbin/capsule-certs-generate --foreman-proxy-fqdn "{{ capsule_hostname }}" --certs-tar "{{ capsule_hostname }}-certs.tar"
+  tags:
+    - configure_capsule
+  register: output
+  delegate_to: "{{ satellite_server }}"
+
+- set_fact:
+     foreman-proxy-oauth-consumer-key: "{{ output.stdout_lines | regex_search('(foreman-proxy-oauth-consumer-secret)') }}"
+     foreman-proxy-oauth-consumer-secret: "{{ output.stdout_lines | regex_search('(foreman-proxy-oauth-consumer-key)') }}"
+  tags:
+    - configure_capsule
+    
+- debug: var=foreman-proxy-oauth-consumer-key
+  tags:
+    - configure_capsule
+
+- debug: var=foreman-proxy-oauth-consumer-secret
+  tags:
+    - configure_capsule
+

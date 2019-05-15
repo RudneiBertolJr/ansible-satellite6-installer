@@ -1,0 +1,10 @@
+satellite_server: dell-r430-1.gsslab.rdu2.redhat.com
+satellite_user: admin
+satellite_password: CHANGEME
+satellite_version: "6.4"
+hostname_full: '{{ ansible_fqdn }}'
+foreman_admin_password: '{{ satellite_password }}'
+foreman_initial_organization: ACME
+ip_address_cap: "{{ ansible_default_ipv4['address'] }}"
+capsule_hostname: rhel74.acme.local
+sync_timeout: 120

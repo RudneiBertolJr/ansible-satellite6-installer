@@ -1,0 +1,7 @@
+---
+- name: MAIN | Deploying satellite capsule server
+  hosts: all
+  vars:
+    satellite_password: 'CHANGEME'
+  roles:
+    - capsule_installer

@@ -1,0 +1,50 @@
+---
+- name: sync_capsule_repos | Sync Capsule Repositories RHEL7
+  command: "{{ item }}"
+  when: satellite_version == "6.2"
+  tags:
+    - sync_capsule_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Software Collections (for RHEL Server)' --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Capsule 6.2 (for RHEL 7 Server) (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Satellite Capsule' --async
+  delegate_to: "{{ satellite_server }}"
+
+- name: sync_capsule_repos | Sync Capsule Repositories RHEL7
+  command: "{{ item }}"
+  when: satellite_version == "6.3"
+  tags:
+    - sync_capsule_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Software Collections (for RHEL Server)'  --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Capsule 6.3 (for RHEL 7 Server) (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Satellite Capsule' --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Capsule 6.3 - Puppet 4 (for RHEL 7 Server) (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Satellite Capsule' --async
+  delegate_to: "{{ satellite_server }}"
+
+- name: sync_capsule_repos | Sync Capsule Repositories RHEL7
+  command: "{{ item }}"
+  when: satellite_version == "6.4"
+  tags:
+    - sync_capsule_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Software Collections (for RHEL Server)'  --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Maintenance 6 (for RHEL 7 Server) (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Ansible Engine 2.6 RPMs for Red Hat Enterprise Linux 7 Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Ansible Engine' --async
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Capsule 6.4 (for RHEL 7 Server) (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Satellite Capsule' --async
+  delegate_to: "{{ satellite_server }}"
+
+- name: sync_repos | Check the Synchronization Tasks - 1h time out.
+  shell: "/usr/bin/hammer -u admin -p '{{ foreman_admin_password }}' --csv task list --search 'state=running and action ~ Synchronize repository' | grep -v '^ID'"
+  register: sync_tasks
+  tags:
+    - sync_repos
+  ignore_errors: yes
+  until: sync_tasks.stdout == ""
+  delay: 60
+  retries: "{{ sync_timeout }}"
+  delegate_to: "{{ satellite_server }}"
