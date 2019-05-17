@@ -1,16 +1,19 @@
 ---
-- name: configure_satellite | Copy the manifest
-  copy:
-    src: "{{ manifest_name }}"
-    dest: "{{ manifest_path }}/{{ manifest_name }}"
-    owner: root
-    group: root
-    mode: 0644
+- name: configure_satellite | Create Manifest and add subs
+  redhat_manifest:
+    name: "{{ rhsm_user }}-{{ ansible_hostname }}-{{ satellite_version }}" 
+    username: '{{ rhsm_user }}'
+    password: '{{ rhsm_password }}'
+    pool_id: 8a85f9833e1404a9013e3cddf95a0599
+    quantity: 4
+    validate_certs: false
+    satellite_version: "sat-{{ satellite_version }}"
+    path: "{{ manifest_path }}/{{ rhsm_user }}-{{ ansible_hostname }}-{{ satellite_version }}.zip"
   tags:
     - configure_satellite
 
 - name: configure_satellite | Configure the manifest to Satellite
-  command: /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" subscription upload --file "{{ manifest_path }}/{{ manifest_name }}" --organization  "{{ foreman_initial_organization }}"
+  command: /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" subscription upload --file "{{ manifest_path }}/{{ rhsm_user }}-{{ ansible_hostname }}-{{ satellite_version }}.zip" --organization  "{{ foreman_initial_organization }}"
   tags:
     - configure_satellite
 
@@ -57,3 +60,14 @@
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository-set enable --name 'Red Hat Enterprise Linux 7 Server (Kickstart)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --basearch x86_64 --releasever 7Server
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository-set enable --name 'Red Hat Enterprise Linux 7 Server (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --basearch x86_64 --releasever 7Server
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository-set enable --name 'Red Hat Satellite Tools 6.4 (for RHEL 7 Server) (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --basearch x86_64
+
+- name: configure_satellite | Enable RedHat Repositoty RHEL7
+  command: "{{ item }}"
+  when: satellite_version == "6.5"
+  tags:
+    - enable_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository-set enable --name 'Red Hat Enterprise Linux 7 Server (Kickstart)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --basearch x86_64 --releasever 7Server
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository-set enable --name 'Red Hat Enterprise Linux 7 Server (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --basearch x86_64 --releasever 7Server
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository-set enable --name 'Red Hat Satellite Tools 6.5 (for RHEL 7 Server) (RPMs)' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --basearch x86_64

@@ -34,6 +34,15 @@
   with_items:
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view update --name "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --repositories "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server","Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server","Red Hat Satellite Tools 6.4 for RHEL 7 Server RPMs x86_64"
 
+- name: content_view | Setting Products to "{{ cv_name }}" Content View 
+  command: "{{ item }}"
+  tags:
+    - content_view
+  when: satellite_version == "6.5"
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" content-view update --name "{{ cv_name }}" --organization "{{ foreman_initial_organization }}" --repositories "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server","Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server","Red Hat Satellite Tools 6.5 for RHEL 7 Server RPMs x86_64"
+
 - name: content_view | Publishing Content View "{{ cv_name }}"
   command: "{{ item }}"
   tags:
