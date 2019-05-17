@@ -10,13 +10,13 @@ This role was created to install and configure a Satellite 6 server
 - Register the server to the RHSM customer portal.
 - Configure a Satellite subscription.
 - Configure the Satellite repositories.
-  Note: Satellite 6.2 is installed with Puppet 3, Satellite 6.3 is installed with Puppet 4 and Satellite 6.5 with Puppet 5.
+  Note: Satellite 6.2 is installed with Puppet 3, Satellite 6.3 is installed with Puppet 4 and Satellite 6.4 & 6.5 with Puppet 5.
 - Enable the satellite services in the firewall.
 - Update the machine.
 - Install the Satellite packages.
 - Install the Satellite with the default parameters.
+- Create the manifest to the Satellite on the Customer portal.
 - Import the manifest to the Satellite.
-- Update the manifest with the customer portal.
 - Configure the packages default policy to on_demand
 - Enable the Red Hat Enterprise Linux 7 kickstart on the Satellite Server.
 - Enable the Red Hat Enterprise Linux 7 products on the Satellite Server.
@@ -30,11 +30,7 @@ This role was created to install and configure a Satellite 6 server
 
 ## How to use this role.
 
-- 1) Go to the customer portal and generate a manifest.
-
-- 2) Store the manifest under the directory "files" in this role. ~/ansible-satellite6-install/files
-
-- 3) Create a playbook as the following instance or use the project example:
+- 1) Create a playbook as the following instance or use the project example:
 
 ~~~
 cat playbook_install_sat.yml
@@ -48,14 +44,13 @@ cat playbook_install_sat.yml
     rhsm_password: 'MYSUPERPASS'
     satellite_package_version: "satellite-6.3.3"
     satellite_version: "6.3"
-    manifest_name: "my_super_manifest.zip"
   roles:
     - ansible-satellite6-install
 ~~~
 
-- 4) Configure the satellite into the ansible hosts "/etc/ansible/hosts"
+- 2) Configure the satellite into the ansible hosts "/etc/ansible/hosts"
 
-- 5) Run the ansible-playbook command and wait. 
+- 3) Run the ansible-playbook command and wait. 
 
   `ansible-playbook playbook_install_sat.yml -l <satellite_host>`
 
@@ -74,11 +69,6 @@ Password to the user connect and register the machine to the customer portal.
 Satellite main version, this variable is used to set the right repository
 i.e: `satellite_version=6.3` to configure the repositories to Satellite 6.3
 
-
-### satellite_package_version
-Satellite package name 
-i.e: To install Satellite 6.3.2 use `satellite_package_version="satellite-6.3.2"` for the latest z-stream version use `"satellite_package_version=satellite"`
-
 ### foreman_admin_password
 Satellite default admin password.
 
@@ -87,13 +77,6 @@ Satellite default organization
 
 ### foreman_initial_location
 Satellite default location
-
-### manifest_path
-Path where will be copied the manifest into the Satellite.
-
-### manifest_name 
-The name of the manifest generated in the customer portal.
-Save the manifest in the role files directory `"~/ansible-satellite6-install/files"`.
 
 ### cv_name
 The content view name that will be created during the configuration process.
@@ -117,7 +100,6 @@ https://access.redhat.com/articles/1365633
     rhsm_user: 'ROOT_USER'
     rhsm_password: 'MYSUPERPASS'
     satellite_version: "6.4"
-    manifest_name: "my_super_manifest.zip"
   roles:
     - ansible-satellite6-install
     - reboot
