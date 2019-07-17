@@ -1,10 +1,21 @@
-satellite_server: dell-r430-1.gsslab.rdu2.redhat.com
+satellite_server: satellite.acme.local
 satellite_user: admin
 satellite_password: CHANGEME
-satellite_version: "6.4"
+satellite_version: "6.5"
+lifecycle_environment: Library
+rhsm_pool_id: "8a85f9833e1404a9013e3cddf95a0599"
 hostname_full: '{{ ansible_fqdn }}'
 foreman_admin_password: '{{ satellite_password }}'
 foreman_initial_organization: ACME
 ip_address_cap: "{{ ansible_default_ipv4['address'] }}"
-capsule_hostname: rhel74.acme.local
+capsule_hostname: capsule.acme.local
 sync_timeout: 120
+capsule_package_version: satellite-capsule
+packages_list:
+  - "{{ capsule_package_version }}"
+  - wget
+  - git
+  - bash-completion
+  - screen
+  - vim-*
+  - chrony

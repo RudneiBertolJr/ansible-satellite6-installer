@@ -1,34 +1,27 @@
 ---
-#- name: registration | Downloading the Satellite CA Consumer
-#  get_url:
-#    url: "http://{{ satellite_server }}/pub/katello-ca-consumer-latest.noarch.rpm"
-#    dest: /root/katello-ca-consumer-latest.noarch.rpm
-#  tags:
-#    - registration
-
 - name: registration | Installing the Satellite CA Consumer
   yum:
     name: "http://{{ satellite_server }}/pub/katello-ca-consumer-latest.noarch.rpm"
     state: present
   tags:
-    - registration
+    - rhsm
 
-- name: registration | Register machine on the Satellite
-  command: /usr/bin/subscription-manager register --username={{ satellite_user }} --password={{ satellite_password }} --name={{ hostname_full }}
+- name: registration | Register machine with RHSM
+  command: /usr/bin/subscription-manager register --username={{ satellite_user }} --password={{ satellite_password }} --name={{ hostname_full }} --environment={{ lifecycle_environment }}
   tags:
-    - registration
+    - rhsm
   ignore_errors: yes
   no_log: yes
 
-- name: registration | Get Satellite Capsule pool ID Subscription 
-  shell: /usr/bin/subscription-manager list --all --available --matches="Red Hat Satellite Capsule Server" | awk '/Pool ID/ {print $3}' | head -1
+- name: registration | Get Satellite pool ID
+  shell: /usr/bin/subscription-manager list --all --available --matches="Red Hat Satellite" | awk '/Pool ID/ {print $3}' | head -1
   tags:
-    - registration
+    - rhsm
   register: pool_id
   ignore_errors: yes
 
-- name: registration | Attach Satellite Capsule pool ID Subscription
+- name: registration | Attach machine with Satellite pool ID
   command: /usr/bin/subscription-manager attach --pool={{ pool_id.stdout }}
   tags:
-    - registration
+    - rhsm
   ignore_errors: yes

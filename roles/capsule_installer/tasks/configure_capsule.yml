@@ -1,6 +1,6 @@
 ---
 - name: configure_capsule | Set hostname
-  command: hostnamectl set-hostname {{ hostname_full }}
+  command: hostnamectl set-hostname {{ ansible_fqdn }}
   tags:
     - configure_capsule
 
@@ -12,23 +12,49 @@
     - configure_capsule
 
 - name: configure_capsule | Execute the Capsule Certs Generate
-  command: /usr/sbin/capsule-certs-generate --foreman-proxy-fqdn "{{ capsule_hostname }}" --certs-tar "{{ capsule_hostname }}-certs.tar"
+  command: /usr/sbin/capsule-certs-generate --foreman-proxy-fqdn "{{ capsule_hostname }}" --certs-tar "/root/{{ capsule_hostname }}-certs.tar"
   tags:
     - configure_capsule
-  register: output
   delegate_to: "{{ satellite_server }}"
 
-- set_fact:
-     foreman-proxy-oauth-consumer-key: "{{ output.stdout_lines | regex_search('(foreman-proxy-oauth-consumer-secret)') }}"
-     foreman-proxy-oauth-consumer-secret: "{{ output.stdout_lines | regex_search('(foreman-proxy-oauth-consumer-key)') }}"
-  tags:
-    - configure_capsule
-    
-- debug: var=foreman-proxy-oauth-consumer-key
-  tags:
-    - configure_capsule
-
-- debug: var=foreman-proxy-oauth-consumer-secret
+- name: configure_capsule | Fetch {{ capsule_hostname }}-certs.tar 
+  fetch: 
+    src: "/root/{{ capsule_hostname }}-certs.tar" 
+    dest: buffer/ 
+    flat: yes
+  delegate_to: "{{ satellite_server }}"
   tags:
     - configure_capsule
 
+- name: configure_capsule | Copy {{ capsule_hostname }}-certs.tar to the host {{ capsule_hostname }}
+  copy: 
+    src: "buffer/{{ capsule_hostname }}-certs.tar"
+    dest: /root
+  tags:
+    - configure_capsule
+
+- name: configure_capsule | Get the foreman-proxy-oauth-consumer-secret from Satellite.
+  shell: "/usr/sbin/satellite-installer --help |grep foreman-proxy-oauth-consumer-secret |awk -F 'current: ' '{print $2}' | sed s/\\\"\\)// | sed s/\\\"//" 
+  register: oauth_cosumer_secret
+  tags:
+    - configure_capsule
+  delegate_to: "{{ satellite_server }}"
+
+- name: configure_capsule | Get the foreman-proxy-oauth-consumer-key from Satellite.
+  shell: "/usr/sbin/satellite-installer --help |grep foreman-proxy-oauth-consumer-key |awk -F 'current: ' '{print $2}' | sed s/\\\"\\)// | sed s/\\\"//"
+  register: oauth_cosumer_key
+  tags:
+    - configure_capsule
+  delegate_to: "{{ satellite_server }}"
+
+- name: configure_capsule | Setting the vars required to execute the capsule installer.
+  set_fact:
+     foreman_proxy_oauth_consumer_secret: "{{ oauth_cosumer_secret.stdout }}"
+     foreman_proxy_oauth_consumer_key: "{{ oauth_cosumer_key.stdout }}"
+  tags:
+    - configure_capsule
+
+- name: configure_capsule | Installing the Capsule {{ capsule_hostname }}
+  command: /usr/sbin/satellite-installer --scenario capsule --foreman-proxy-content-parent-fqdn {{ satellite_server }} --foreman-proxy-register-in-foreman true --foreman-proxy-foreman-base-url https://{{ satellite_server }} --foreman-proxy-trusted-hosts {{ satellite_server }} --foreman-proxy-trusted-hosts {{ capsule_hostname }} --foreman-proxy-oauth-consumer-key {{ foreman_proxy_oauth_consumer_key }} --foreman-proxy-oauth-consumer-secret {{ foreman_proxy_oauth_consumer_secret }} --foreman-proxy-content-certs-tar /root/{{ capsule_hostname }}-certs.tar --puppet-server-foreman-url https://{{ satellite_server }} 
+  tags:
+    - configure_capsule
