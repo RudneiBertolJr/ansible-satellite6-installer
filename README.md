@@ -10,7 +10,7 @@ This role was created to install and configure a Satellite 6 server
 - Register the server to the RHSM customer portal.
 - Configure a Satellite subscription.
 - Configure the Satellite repositories.
-  Note: Satellite 6.2 is installed with Puppet 3, Satellite 6.3 is installed with Puppet 4 and Satellite 6.4 & 6.5 with Puppet 5.
+  Note: Satellite 6.2 is installed with Puppet 3, Satellite 6.3 is installed with Puppet 4 and Satellite 6.4,6.5,6.6,6.7 with Puppet 5.
 - Enable the satellite services in the firewall.
 - Update the machine.
 - Install the Satellite packages.
