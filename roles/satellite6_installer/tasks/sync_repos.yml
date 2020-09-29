@@ -1,5 +1,5 @@
 ---
-- name: sync_repos | Sync RedHat Repositoty RHEL7
+- name: sync_repos | Sync RedHat Repositories
   command: "{{ item }}"
   when: satellite_version == "6.2"
   tags:
@@ -11,7 +11,7 @@
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.2 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
   
 
-- name: sync_repos | Sync RedHat Repositoty RHEL7
+- name: sync_repos | Sync RedHat Repositories
   command: "{{ item }}"
   when: satellite_version == "6.3"
   tags:
@@ -23,7 +23,7 @@
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.3 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.3 - Puppet 4 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
 
-- name: sync_repos | Sync RedHat Repositoty RHEL7
+- name: sync_repos | Sync RedHat Repositories
   command: "{{ item }}"
   when: satellite_version == "6.4"
   tags:
@@ -34,7 +34,7 @@
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.4 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
 
-- name: sync_repos | Sync RedHat Repositoty RHEL7
+- name: sync_repos | Sync RedHat Repositories
   command: "{{ item }}"
   when: satellite_version == "6.5"
   tags:
@@ -44,6 +44,28 @@
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
    - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.5 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server' --async
+
+- name: sync_repos | Sync RedHat Repositories
+  command: "{{ item }}"
+  when: satellite_version == "6.6"
+  tags:
+    - sync_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.6 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+
+- name: sync_repos | Sync RedHat Repositories
+  command: "{{ item }}"
+  when: satellite_version == "6.7"
+  tags:
+    - sync_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.7 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
 
 - name: sync_repos | Check the Synchronization Tasks - 1h time out.
   shell: "/usr/bin/hammer -u admin -p '{{ foreman_admin_password }}' --csv task list --search 'state=running and action ~ Synchronize repository' | grep -v '^ID'"

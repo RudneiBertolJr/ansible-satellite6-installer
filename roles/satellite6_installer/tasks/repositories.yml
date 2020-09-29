@@ -31,3 +31,39 @@
     - repos
   when: satellite_version == "6.5"
   ignore_errors: yes
+
+- name: repositories | Enable Satellite 6.6 Repositories
+  shell: /usr/bin/subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-server-rhscl-7-rpms --enable=rhel-7-server-satellite-6.6-rpms --enable=rhel-7-server-satellite-maintenance-6-rpms --enable=rhel-7-server-ansible-2.8-rpms
+  tags:
+    - repos
+  when: satellite_version == "6.6"
+  ignore_errors: yes
+
+- name: repositories | Enable Satellite 6.7 Repositories
+  shell: /usr/bin/subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-server-rhscl-7-rpms --enable=rhel-7-server-satellite-6.7-rpms --enable=rhel-7-server-satellite-maintenance-6-rpms --enable=rhel-7-server-ansible-2.8-rpms
+  tags:
+    - repos
+  when: satellite_version == "6.7"
+  ignore_errors: yes
+
+- name: sync_repos | Sync RedHat Repositoty RHEL7
+  command: "{{ item }}"
+  when: satellite_version == "6.6"
+  tags:
+    - sync_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.6 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+
+- name: sync_repos | Sync RedHat Repositoty RHEL7
+  command: "{{ item }}"
+  when: satellite_version == "6.7"
+  tags:
+    - sync_repos
+  ignore_errors: yes
+  with_items:
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server Kickstart x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
+   - /usr/bin/hammer -u admin -p "{{ foreman_admin_password }}" repository synchronize --name 'Red Hat Satellite Tools 6.7 for RHEL 7 Server RPMs x86_64' --organization "{{ foreman_initial_organization }}" --product 'Red Hat Enterprise Linux Server'
